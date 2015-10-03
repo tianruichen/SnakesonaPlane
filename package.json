@@ -1,0 +1,22 @@
+{
+  "name": "snakesonaplane",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.13.3",
+    "node-uuid": "^1.4.3",
+    "socket.io": "^1.3.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "SnakesonaPlane"
+  },
+  "author": "Tianrui Chen",
+  "license": "ISC"
+}
