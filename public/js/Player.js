@@ -24,8 +24,10 @@ var Player = function(startX, startY) {
 		direction = d;
 	};
 
-	var update = function() {
-		head = segments[0].slice();
+	var update = function(players) {
+		var head = segments[0].slice(),
+			headStr = JSON.stringify(head),
+			i, j, playerSegments;
 
 		switch (direction) {
 			case "u": head[1]--; break;
@@ -34,8 +36,19 @@ var Player = function(startX, startY) {
 			case "r": head[0]++; break;
 		}
 
+
+		for (i = 0; i < players.length; i++) {
+			var playerSegments = players[i].getSegments();
+			for (j = 0; j < playerSegments.length; j++) {
+				if (JSON.stringify(playerSegments[j]) == headStr) {
+					return false;
+				}
+			}
+		}
+
 		segments.pop();
 		segments.unshift(head);
+		return true;
 	};
 
 	var draw = function(ctx) {

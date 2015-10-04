@@ -96,16 +96,15 @@ function playerById(id) {
     return false;
 };
 
-function update(){
-    players.forEach(function (e) {
-        e.getSegments().forEach(function (z) {
-            grid[z[0]][z[1]] = e.id;
-        });
+function update() {
+    players.forEach(function(p) {
+        if (!p.update(players)) {
+            // TODO: player lose
+        }
     });
 }
 
-function getObjects(){
-    //update();
+function getObjects() {
     this.emit("get objects", {player: players, food: food});
 }
 
