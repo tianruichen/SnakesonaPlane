@@ -6,6 +6,7 @@ var canvas,			// Canvas DOM element
 	keys,			// Keyboard input
     remotePlayers,  // Remote player
 	localPlayer,	// Local player
+    allObjects,
     socket;
 
 
@@ -58,13 +59,14 @@ var setEventHandlers = function() {
     socket.on("new player", onNewPlayer);
     socket.on("move player", onMovePlayer);
     socket.on("remove player", onRemovePlayer);
+    socket.on("get objects", getObjects);
 };
 
 // Keyboard key down
 function onKeydown(e) {
 	if (localPlayer) {
         //console.log("testing");
-        socket.emit("move player", {id: localPlayer.id});
+        socket.emit("change direction", {id: localPlayer.id});
 		keys.onKeyDown(e);
 	};
 };
@@ -168,9 +170,13 @@ function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	// Draw the local player
-	localPlayer.draw(ctx);
+	//localPlayer.draw(ctx);
     var i;
-    for (i = 0; i < remotePlayers.length; i++) {
-        remotePlayers[i].draw(ctx);
+    for (i = 0; i < allObjects.length; i++) {
+        allObjects[i].draw(ctx);
     };
 };
+
+function getObjects(data){
+    allObjects = data;
+}

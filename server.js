@@ -2,10 +2,12 @@ var express = require('express'),
     app = express(),
     server = require('http').createServer(app), 
     io = require('socket.io')(server),
-    Player = require("./Player").Player;
+    Player = require("./Player").Player,
+    players = [],
+    grid = [50][50];
 
 function init() {
-    players = [];
+   
     app.use(express.static(__dirname + '/public'));  
     app.get('/', function(req, res, next) {  
         res.sendFile(__dirname + '/public/index.html');
@@ -26,7 +28,8 @@ function setEventHandlers(){
         
         client.on("disconnect", onClientDisconnect);
         client.on("new player", onNewPlayer);
-        client.on("move player", onMovePlayer);
+        client.on("change direction", changeDirection);
+        client.on("update", updater);
         //client.on("remove player", onRemovePlayer);
     });
 };
@@ -57,7 +60,7 @@ function onNewPlayer(data) {
     players.push(newPlayer);
 };
 
-function onMovePlayer(data) {
+function changeDirection(data) {
     console.log("move it");
     var movePlayer = playerById(this.id);
 
@@ -82,6 +85,11 @@ function playerById(id) {
 
     return false;
 };
+
+function updater(){
+    //update();
+    this.emit("get objects", objects);
+}
 
 init();
 
