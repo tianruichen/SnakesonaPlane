@@ -1,6 +1,6 @@
 var express = require('express'),
     app = express(),
-    server = require('http').createServer(app), 
+    server = require('http').createServer(app),
     io = require('socket.io')(server),
     Player = require("./public/js/Player"),
     players = [],
@@ -27,8 +27,8 @@ function setEventHandlers(){
         client.on("disconnect", onClientDisconnect);
         client.on("new player", onNewPlayer);
         client.on("change direction", changeDirection);
-        client.on("update", getObjects);
-        //client.on("remove player", onRemovePlayer);
+        // client.on("update", getObjects);
+        // client.on("remove player", onRemovePlayer);
     });
 };
 
@@ -60,27 +60,13 @@ function onNewPlayer(data) {
 };
 
 function changeDirection(data) {
-    console.log("move it");
     var movePlayer = playerById(this.id);
 
     if (!movePlayer) {
         console.log("Player not found: "+this.id);
         return;
     };
-    var dir;
-    if (data.direction === 37){
-        dir = "l";
-    }
-    if (data.direction === 38){
-        dir = "u";
-    }
-    if (data.direction === 39){
-        dir = "r";
-    }
-    if (data.direction === 40){
-        dir = "d";
-    }
-    movePlayer.setDirection(dir);
+    movePlayer.direction = data.direction;
 
     //this.broadcast.emit("move player", {id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY()});
 };
@@ -102,10 +88,7 @@ function update() {
             // TODO: player lose
         }
     });
-}
-
-function getObjects() {
-    this.emit("get objects", {players: players, food: food});
+    io.emit("get objects", {players: players, food: food});
 }
 
 init();

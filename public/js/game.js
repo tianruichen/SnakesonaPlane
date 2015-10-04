@@ -35,13 +35,12 @@ function init() {
 	// Initialise the local player
 	localPlayer = new Player(startX, startY);
 
-    
     socket = io.connect('http://localhost:8000');
     remotePlayers = [];
-    
+
 	// Start listening for events
 	setEventHandlers();
-    
+
 };
 
 
@@ -60,19 +59,20 @@ var setEventHandlers = function() {
     socket.on("new player", onNewPlayer);
     //socket.on("move player", changeDirection);
     socket.on("remove player", onRemovePlayer);
-    socket.on("get object", getObjects);
+    socket.on("get objects", getObjects);
 };
 
 // Keyboard key down
 function onKeydown(e) {
-    var code = e.keyCode;
-    if (code >= 37 || code <=40 ){
-        if (localPlayer) {
-            //console.log("testing");
-            //keys.onKeyDown(e);
-            socket.emit("change direction", {id: localPlayer.id, direction: code});
-        };
-    };
+	var d = false;
+    switch (e.keyCode) {
+		case 37: d = "l"; break;
+		case 38: d = "u"; break;
+		case 39: d = "r"; break;
+		case 40: d = "d"; break;
+	}
+
+	if (d) socket.emit("change direction", {id: localPlayer.id, direction: d});
 };
 
 // Keyboard key up
@@ -131,7 +131,7 @@ function onRemovePlayer(data) {
     };
 
     remotePlayers.splice(remotePlayers.indexOf(removeRemotePlayer), 1);
-    
+
     this.broadcast.emit("remove player", {id: this.id});
 };
 
@@ -175,17 +175,17 @@ function draw() {
 	// Wipe the canvas clean
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-	// Draw the local player
-	//localPlayer.draw(ctx);
-    var i;
-    for (i = 0; i < players.length; i++) {
-        console.log(players[i]);
-        players[i].draw(ctx);
-    };
+	// Draw all players
+    players.forEach(function (p) { p.draw(ctx); });
 };
 
-function getObjects(data){
-    console.log("objects got")
-    players = data.players.map(function (p) { return Object.create(Player, p); });
-    food = data.food;
+function toPrototype(proto, data) {
+	obj = Object.create(proto);
+	for (key in data) obj[key] = data[key];
+	return obj;
+}
+
+function getObjects(data) {
+    players = data.players.map(function (p) { return toPrototype(Player.prototype, p); });
+    food = data.food.map(function (f) { return toPrototype(Player.prototype, f); });
 }
