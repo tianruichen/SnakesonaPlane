@@ -3,8 +3,7 @@
 **************************************************/
 var Player = function(startX, startY) {
 	var segments = [[startX, startY]],
-		direction = "r",
-		id,
+		direction = "r";
 
 	var getSegments = function() {
 		return segments;
@@ -37,7 +36,7 @@ var Player = function(startX, startY) {
 	};
 
 	var draw = function(ctx) {
-		segments.foreach(function (s) {
+		segments.forEach(function (s) {
 			ctx.fillRect(s[0] * 10, s[1] * 10, 10, 10);
 		});
 	};
@@ -51,3 +50,6 @@ var Player = function(startX, startY) {
 		draw: draw
 	};
 };
+
+// export if node.js
+if (typeof module !== "undefined") module.exports = Player;

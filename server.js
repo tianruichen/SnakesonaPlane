@@ -2,14 +2,11 @@ var express = require('express'),
     app = express(),
     server = require('http').createServer(app), 
     io = require('socket.io')(server),
-    Player = require("./Player").Player;
+    Player = require("./js/Player");
 
 function init() {
     players = [];
-    app.use(express.static(__dirname + '/public'));  
-    app.get('/', function(req, res, next) {  
-        res.sendFile(__dirname + '/public/index.html');
-    });
+    app.use(express.static(__dirname + '/public'));
 
     server.listen(8000); 
     setEventHandlers();
