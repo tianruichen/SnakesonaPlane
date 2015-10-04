@@ -21,9 +21,6 @@ var Food = function(startX, startY) {
 	return {
         getX: getX,
         getY: getY,
-        setX: setX,
-        setY: setY,
-		update: update,
 		draw: draw
 	}
 };

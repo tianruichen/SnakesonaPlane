@@ -6,7 +6,7 @@ var canvas,			// Canvas DOM element
 	keys,			// Keyboard input
     remotePlayers,  // Remote player
 	localPlayer,	// Local player
-    allObjects,
+    allObjects = new Array(0),
     socket;
 
 
@@ -59,7 +59,6 @@ var setEventHandlers = function() {
     socket.on("new player", onNewPlayer);
     socket.on("move player", onMovePlayer);
     socket.on("remove player", onRemovePlayer);
-    socket.on("get objects", getObjects);
 };
 
 // Keyboard key down
@@ -89,7 +88,7 @@ function onResize(e) {
 
 function onSocketConnected() {
     console.log("Connected to socket server");
-    socket.emit("new player", {x: localPlayer.getX(), y: localPlayer.getY()});
+    socket.emit("new player", {x: Math.floor(Math.random() * 49), y: Math.floor(Math.random() * 49)});
 };
 
 function onSocketDisconnect() {
@@ -145,6 +144,7 @@ function remotePlayerById(id) {
 **************************************************/
 function animate() {
 	update();
+    socket.emit("updater");
 	draw();
 
 	// Request a new animation frame using Paul Irish's shim
@@ -178,5 +178,6 @@ function draw() {
 };
 
 function getObjects(data){
+    console.log("objects got")
     allObjects = data;
 }

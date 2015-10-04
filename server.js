@@ -4,12 +4,20 @@ var express = require('express'),
     io = require('socket.io')(server),
     Player = require("./public/js/Player"),
     players = [],
-    grid = [50][50];
+    food = [],
+    grid = new Array(50),
+    fps = 2,
+    intervalId;
 
 function init() {
     app.use(express.static(__dirname + '/public'));
     server.listen(8000); 
+    var i, j;
+    for (i = 0; i < 50; i++){    
+        grid[i] = new Array(50);
+    }
     setEventHandlers();
+    intervalId = setInterval(update, 1000 / fps);
 };
 
 function setEventHandlers(){
@@ -24,7 +32,7 @@ function setEventHandlers(){
         client.on("disconnect", onClientDisconnect);
         client.on("new player", onNewPlayer);
         client.on("change direction", changeDirection);
-        client.on("update", updater);
+        client.on("update", getObjects);
         //client.on("remove player", onRemovePlayer);
     });
 };
@@ -46,11 +54,11 @@ function onClientDisconnect() {
 function onNewPlayer(data) {
     var newPlayer = new Player(data.x, data.y);
     newPlayer.id = this.id;
-    this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY()});
+    this.broadcast.emit("new player", {id: newPlayer.id, x: data.x, y: data.y});
     var i, existingPlayer;
     for (i = 0; i < players.length; i++) {
         existingPlayer = players[i];
-        this.emit("new player", {id: existingPlayer.id, x: existingPlayer.getX(), y: existingPlayer.getY()});
+        //this.emit("new player", {id: existingPlayer.id, x: existingPlayer.getX(), y: existingPlayer.getY()});
     };
     players.push(newPlayer);
 };
@@ -64,10 +72,9 @@ function changeDirection(data) {
         return;
     };
 
-    movePlayer.setX(data.x);
-    movePlayer.setY(data.y);
+    movePlayer.setDirection(data.direction);
 
-    this.broadcast.emit("move player", {id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY()});
+    //this.broadcast.emit("move player", {id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY()});
 };
 
 
@@ -81,9 +88,17 @@ function playerById(id) {
     return false;
 };
 
-function updater(){
+function update(){
+    players.forEach(function (e) {
+        e.getSegments().forEach(function (z) {
+            grid[z[0]][z[1]] = e.id;
+        });
+    });
+}
+
+function getObjects(){
     //update();
-    this.emit("get objects", objects);
+    this.emit("get objects", {player: players, food: food});
 }
 
 init();
