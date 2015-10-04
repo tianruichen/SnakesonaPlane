@@ -1,8 +1,6 @@
 var Food = function(startX, startY) {
 	var x = startX,
-		y = startY,
-        id,
-		moveAmount = 2;
+		y = startY;
     
     var getX = function() {
         return x;
@@ -13,18 +11,15 @@ var Food = function(startX, startY) {
     };
 
 	var draw = function(ctx) {
-        context.beginPath();
-        context.arc(x, y, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = 'green';
-        context.fill();
+        ctx.beginPath();
+        ctx.arc(x + 5, y + 5, 5, 0, 2 * Math.PI, false);
+        ctx.fillStyle = 'green';
+        ctx.fill();
 	};
 
 	return {
         getX: getX,
         getY: getY,
-        setX: setX,
-        setY: setY,
-		update: update,
 		draw: draw
 	}
 };
