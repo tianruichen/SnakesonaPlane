@@ -12,7 +12,7 @@ var Food = function(startX, startY) {
 
 	var draw = function(ctx) {
         ctx.beginPath();
-        ctx.arc(x + 5, y + 5, 5, 0, 2 * Math.PI, false);
+        ctx.arc(x * 10 + 5, y * 10 + 5, 5, 0, 2 * Math.PI, false);
         ctx.fillStyle = 'green';
         ctx.fill();
 	};
