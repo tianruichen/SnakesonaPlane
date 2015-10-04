@@ -2,7 +2,10 @@
 ** GAME PLAYER CLASS
 **************************************************/
 var Player = function(startX, startY) {
-	var segments = [[startX, startY]],
+	var segments = [[startX, startY],
+	                [startX - 1, startY],
+	                [startX - 2, startY],
+	                [startX - 3, startY]];
 		direction = "r";
 
 	var getSegments = function() {
