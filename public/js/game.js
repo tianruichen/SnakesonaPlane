@@ -6,8 +6,8 @@ var canvas,			// Canvas DOM element
 	keys,			// Keyboard input
     remotePlayers,  // Remote player
 	localPlayer,	// Local player
-    players = new Array(0),
-    food = new Array (0),
+    players = [],
+    food = [],
     socket;
 
 
@@ -60,6 +60,7 @@ var setEventHandlers = function() {
     socket.on("new player", onNewPlayer);
     //socket.on("move player", changeDirection);
     socket.on("remove player", onRemovePlayer);
+    socket.on("get object", getObjects);
 };
 
 // Keyboard key down
@@ -147,8 +148,9 @@ function remotePlayerById(id) {
 ** GAME ANIMATION LOOP
 **************************************************/
 function animate() {
-    //update();
-    socket.emit("updater");
+	//update();
+    //console.log("testing");
+    socket.emit("update");
 	draw();
 
 	// Request a new animation frame using Paul Irish's shim
@@ -176,8 +178,9 @@ function draw() {
 	// Draw the local player
 	//localPlayer.draw(ctx);
     var i;
-    for (i = 0; i < allObjects.length; i++) {
-        allObjects[i].draw(ctx);
+    for (i = 0; i < players.length; i++) {
+        console.log(players[i]);
+        players[i].draw(ctx);
     };
 };
 
