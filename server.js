@@ -2,7 +2,7 @@ var express = require('express'),
     app = express(),
     server = require('http').createServer(app), 
     io = require('socket.io')(server),
-    Player = require("./js/Player"),
+    Player = require("./public/js/Player"),
     players = [],
     grid = [50][50];
 
