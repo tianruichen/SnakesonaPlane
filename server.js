@@ -5,7 +5,7 @@ var express = require('express'),
     Player = require("./public/js/Player"),
     players = [],
     food = [],
-    fps = 2,
+    fps = 5,
     intervalId;
 
 function init() {
