@@ -6,7 +6,8 @@ var canvas,			// Canvas DOM element
 	keys,			// Keyboard input
     remotePlayers,  // Remote player
 	localPlayer,	// Local player
-    allObjects = new Array(0),
+    players = new Array(0),
+    food = new Array (0),
     socket;
 
 
@@ -57,17 +58,20 @@ var setEventHandlers = function() {
     socket.on("connect", onSocketConnected);
     socket.on("disconnect", onSocketDisconnect);
     socket.on("new player", onNewPlayer);
-    socket.on("move player", onMovePlayer);
+    //socket.on("move player", changeDirection);
     socket.on("remove player", onRemovePlayer);
 };
 
 // Keyboard key down
 function onKeydown(e) {
-	if (localPlayer) {
-        //console.log("testing");
-        socket.emit("change direction", {id: localPlayer.id});
-		keys.onKeyDown(e);
-	};
+    var code = e.keyCode;
+    if (code >= 37 || code <=40 ){
+        if (localPlayer) {
+            //console.log("testing");
+            //keys.onKeyDown(e);
+            socket.emit("change direction", {id: localPlayer.id, direction: code});
+        };
+    };
 };
 
 // Keyboard key up
@@ -103,7 +107,7 @@ function onNewPlayer(data) {
     remotePlayers.push(newPlayer);
 };
 
-function onMovePlayer(data) {
+/*function onMovePlayer(data) {
     console.log("testing part 2");
     var movePlayer = remotePlayerById(data.id);
 
@@ -114,7 +118,7 @@ function onMovePlayer(data) {
 
     movePlayer.setX(data.x);
     movePlayer.setY(data.y);
-};
+};*/
 
 function onRemovePlayer(data) {
     console.log("New player disconnected: " + data.id);
@@ -143,7 +147,7 @@ function remotePlayerById(id) {
 ** GAME ANIMATION LOOP
 **************************************************/
 function animate() {
-	update();
+    //update();
     socket.emit("updater");
 	draw();
 
@@ -155,11 +159,11 @@ function animate() {
 /**************************************************
 ** GAME UPDATE
 **************************************************/
-function update() {
+/*function update() {
 	if (localPlayer.update(keys)) {
         socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY()});
     };
-};
+};*/
 
 
 /**************************************************
@@ -179,5 +183,6 @@ function draw() {
 
 function getObjects(data){
     console.log("objects got")
-    allObjects = data;
+    players = data.player;
+    food = data.food;
 }

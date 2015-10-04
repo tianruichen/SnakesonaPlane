@@ -5,17 +5,12 @@ var express = require('express'),
     Player = require("./public/js/Player"),
     players = [],
     food = [],
-    grid = new Array(50),
     fps = 2,
     intervalId;
 
 function init() {
     app.use(express.static(__dirname + '/public'));
     server.listen(8000); 
-    var i, j;
-    for (i = 0; i < 50; i++){    
-        grid[i] = new Array(50);
-    }
     setEventHandlers();
     intervalId = setInterval(update, 1000 / fps);
 };
@@ -72,8 +67,20 @@ function changeDirection(data) {
         console.log("Player not found: "+this.id);
         return;
     };
-
-    movePlayer.setDirection(data.direction);
+    var dir;
+    if (data.direction === 37){
+        dir = "l";
+    }
+    if (data.direction === 38){
+        dir = "u";
+    }
+    if (data.direction === 39){
+        dir = "r";
+    }
+    if (data.direction === 40){
+        dir = "d";
+    }
+    movePlayer.setDirection(dir);
 
     //this.broadcast.emit("move player", {id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY()});
 };
