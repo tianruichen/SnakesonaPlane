@@ -10,6 +10,11 @@ function init() {
     app.use(express.static(__dirname + '/public'));
     server.listen(8000); 
     setEventHandlers();
+    for(var i = 0; i < 50; i++){
+        for(var j = 0; j < 50; j++){
+            grid[][] = 0;
+        }
+    }
 };
 
 function setEventHandlers(){
@@ -45,6 +50,7 @@ function onClientDisconnect() {
 
 function onNewPlayer(data) {
     var newPlayer = new Player(data.x, data.y);
+    
     newPlayer.id = this.id;
     this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY()});
     var i, existingPlayer;
