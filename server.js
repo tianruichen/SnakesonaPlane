@@ -4,17 +4,28 @@ var express = require('express'),
     io = require('socket.io')(server),
     Player = require("./Player").Player,
     players = [],
-    grid = [50][50];
+    grid = [50][50],
+    fps = 50,
+    intervalId;
+
+
+// Start the game loop
 
 function init() {
-   
     app.use(express.static(__dirname + '/public'));  
     app.get('/', function(req, res, next) {  
         res.sendFile(__dirname + '/public/index.html');
     });
 
     server.listen(8000); 
+    var i, j;
+    for (i = 0; i < 50; i++){    
+        for (j = 0; j < 50; j++){
+            grid[i][j] = [0, 0];
+        }
+    }
     setEventHandlers();
+    intervalId = setInterval(update, 1000 / fps);
 };
 
 function setEventHandlers(){
@@ -86,9 +97,17 @@ function playerById(id) {
     return false;
 };
 
+function update(){
+    players.forEach(e){
+        e.getSegments().forEach(z){
+            grid[z[0]][z[1]] = e.id;
+        }
+    }
+}
+//this function communicates with the game and sends it the grid
 function updater(){
     //update();
-    this.emit("get objects", objects);
+    this.emit("get objects", grid);
 }
 
 init();
