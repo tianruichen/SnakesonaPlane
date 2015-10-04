@@ -1,25 +1,11 @@
-var Food = function(startX, startY) {
-	var x = startX,
-		y = startY;
-    
-    var getX = function() {
-        return x;
-    };
+var Food = function (startX, startY) {
+	this.x = startX;
+	this.y = startY;
+};
 
-    var getY = function() {
-        return y;
-    };
-
-	var draw = function(ctx) {
-        ctx.beginPath();
-        ctx.arc(x * 10 + 5, y * 10 + 5, 5, 0, 2 * Math.PI, false);
-        ctx.fillStyle = 'green';
-        ctx.fill();
-	};
-
-	return {
-        getX: getX,
-        getY: getY,
-		draw: draw
-	}
+Food.prototype.draw = function (ctx) {
+	ctx.beginPath();
+	ctx.arc(x * 10 + 5, y * 10 + 5, 5, 0, 2 * Math.PI, false);
+	ctx.fillStyle = 'green';
+	ctx.fill();
 };
