@@ -47,7 +47,7 @@ function onClientDisconnect() {
 };
 
 function onNewPlayer(data) {
-    var newPlayer = Player(data.x, data.y);
+    var newPlayer = new Player(data.x, data.y);
     newPlayer.id = this.id;
     players.push(newPlayer);
     /*this.broadcast.emit("new player", {id: newPlayer.id, x: data.x, y: data.y});
@@ -105,8 +105,7 @@ function update() {
 }
 
 function getObjects() {
-    this.emit("get objects", {player: players, food: food});
+    this.emit("get objects", {players: players, food: food});
 }
 
 init();
-

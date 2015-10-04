@@ -186,6 +186,6 @@ function draw() {
 
 function getObjects(data){
     console.log("objects got")
-    players = data.player;
+    players = data.players.map(function (p) { return Object.create(Player, p); });
     food = data.food;
 }
