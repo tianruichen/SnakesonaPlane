@@ -4,8 +4,10 @@ var express = require('express'),
     io = require('socket.io')(server),
     Player = require("./Player").Player;
 
+
 function init() {
     players = [];
+    grid = [50][50];
     app.use(express.static(__dirname + '/public'));  
     app.get('/', function(req, res, next) {  
         res.sendFile(__dirname + '/public/index.html');
@@ -13,6 +15,11 @@ function init() {
 
     server.listen(8000); 
     setEventHandlers();
+    for(var i = 0; i < 50; i++){
+        for(var j = 0; j < 50; j++){
+            grid[][] = 0;
+        }
+    }
 };
 
 function setEventHandlers(){
@@ -47,6 +54,7 @@ function onClientDisconnect() {
 
 function onNewPlayer(data) {
     var newPlayer = new Player(data.x, data.y);
+    
     newPlayer.id = this.id;
     this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY()});
     var i, existingPlayer;
