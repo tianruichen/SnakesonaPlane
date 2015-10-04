@@ -2,56 +2,52 @@
 ** GAME PLAYER CLASS
 **************************************************/
 var Player = function(startX, startY) {
-	var x = startX,
-		y = startY,
-        id,
-		moveAmount = 2;
-    
-    var getX = function() {
-        return x;
-    };
+	var segments = [[startX, startY]],
+		direction = "r",
+		id,
 
-    var getY = function() {
-        return y;
-    };
+	var getSegments = function() {
+		return segments;
+	};
 
-    var setX = function(newX) {
-        x = newX;
-    };
+	var length = function() {
+		return segments.length;
+	};
 
-    var setY = function(newY) {
-        y = newY;
-    };
+	var getDirection = function() {
+		return direction
+	};
 
-	var update = function(keys) {
-        var prevX = x,
-            prevY = y;
-		// Up key takes priority over down
-		if (keys.up) {
-			y -= moveAmount;
-		} else if (keys.down) {
-			y += moveAmount;
-		};
+	var setDirection = function(d) {
+		direction = d;
+	};
 
-		// Left key takes priority over right
-		if (keys.left) {
-			x -= moveAmount;
-		} else if (keys.right) {
-			x += moveAmount;
-		};
-        return (prevX != x || prevY != y) ? true : false;
+	var update = function() {
+		head = segments[0].slice();
+
+		switch (direction) {
+			case "u": head[1]--; break;
+			case "d": head[1]++; break;
+			case "l": head[0]--; break;
+			case "r": head[0]++; break;
+		}
+
+		segments.pop();
+		segments.unshift(head);
 	};
 
 	var draw = function(ctx) {
-		ctx.fillRect(x-5, y-5, 10, 10);
+		segments.foreach(function (s) {
+			ctx.fillRect(s[0] * 10, s[1] * 10, 10, 10);
+		});
 	};
 
 	return {
-        getX: getX,
-        getY: getY,
-        setX: setX,
-        setY: setY,
+        getSegments: getSegments,
+		length: length,
+		getDirection: getDirection,
+		setDirection: setDirection,
 		update: update,
 		draw: draw
-	}
+	};
 };
