@@ -24,6 +24,8 @@ var Player = function(startX, startY) {
     };
 
 	var update = function(keys) {
+        var prevX = x,
+            prevY = y;
 		// Up key takes priority over down
 		if (keys.up) {
 			y -= moveAmount;
@@ -37,6 +39,7 @@ var Player = function(startX, startY) {
 		} else if (keys.right) {
 			x += moveAmount;
 		};
+        return (prevX != x || prevY != y) ? true : false;
 	};
 
 	var draw = function(ctx) {

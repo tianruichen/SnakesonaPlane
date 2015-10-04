@@ -21,17 +21,28 @@ function setEventHandlers(){
 
         client.on('join', function(data) {
             console.log(data);
-            client.emit('messages', 'Hello from server');
+            //client.emit('messages', 'Hello from server');
         });
         
         client.on("disconnect", onClientDisconnect);
         client.on("new player", onNewPlayer);
         client.on("move player", onMovePlayer);
+        //client.on("remove player", onRemovePlayer);
     });
 };
 
 function onClientDisconnect() {
     console.log("Player has disconnected: "+this.id);
+    console.log("Removing plz");
+    var removePlayer = playerById(this.id);
+    if (!removePlayer) {
+        console.log("Player not found: "+this.id);
+        return;
+    };
+
+    players.splice(players.indexOf(removePlayer), 1);
+    this.broadcast.emit("remove player", {id: this.id});
+    //this.emit("remove player", {id: this.id, x: this.getX(), y: this.getY()})
 };
 
 function onNewPlayer(data) {
@@ -47,7 +58,29 @@ function onNewPlayer(data) {
 };
 
 function onMovePlayer(data) {
+    console.log("move it");
+    var movePlayer = playerById(this.id);
 
+    if (!movePlayer) {
+        console.log("Player not found: "+this.id);
+        return;
+    };
+
+    movePlayer.setX(data.x);
+    movePlayer.setY(data.y);
+
+    this.broadcast.emit("move player", {id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY()});
+};
+
+
+function playerById(id) {
+    var i;
+    for (i = 0; i < players.length; i++) {
+        if (players[i].id == id)
+            return players[i];
+    };
+
+    return false;
 };
 
 init();

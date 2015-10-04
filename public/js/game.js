@@ -33,7 +33,6 @@ function init() {
 	// Initialise the local player
 	localPlayer = new Player(startX, startY);
 
-    remotePlayers = [];
     
     socket = io.connect('http://localhost:8000');
     remotePlayers = [];
@@ -64,6 +63,8 @@ var setEventHandlers = function() {
 // Keyboard key down
 function onKeydown(e) {
 	if (localPlayer) {
+        //console.log("testing");
+        socket.emit("move player", {id: localPlayer.id});
 		keys.onKeyDown(e);
 	};
 };
@@ -71,6 +72,8 @@ function onKeydown(e) {
 // Keyboard key up
 function onKeyup(e) {
 	if (localPlayer) {
+        //socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY()});
+        //console.log("testing");
 		keys.onKeyUp(e);
 	};
 };
@@ -89,6 +92,7 @@ function onSocketConnected() {
 
 function onSocketDisconnect() {
     console.log("Disconnected from socket server");
+    //socket.emit("remove player", {x: localPlayer.getX(), y: localPlayer.getY()});
 };
 
 function onNewPlayer(data) {
@@ -99,14 +103,41 @@ function onNewPlayer(data) {
 };
 
 function onMovePlayer(data) {
+    console.log("testing part 2");
+    var movePlayer = remotePlayerById(data.id);
 
+    if (!movePlayer) {
+        console.log("Player not found: "+data.id);
+        return;
+    };
+
+    movePlayer.setX(data.x);
+    movePlayer.setY(data.y);
 };
 
 function onRemovePlayer(data) {
+    console.log("New player disconnected: " + data.id);
+    var removeRemotePlayer = remotePlayerById(data.id);
 
+    if (!removeRemotePlayer) {
+        console.log("Player not found: "+data.id);
+        return;
+    };
+
+    remotePlayers.splice(remotePlayers.indexOf(removeRemotePlayer), 1);
+    
+    this.broadcast.emit("remove player", {id: this.id});
 };
 
+function remotePlayerById(id) {
+    var i;
+    for (i = 0; i < remotePlayers.length; i++) {
+        if (remotePlayers[i].id == id)
+            return remotePlayers[i];
+    };
 
+    return false;
+};
 /**************************************************
 ** GAME ANIMATION LOOP
 **************************************************/
@@ -123,7 +154,9 @@ function animate() {
 ** GAME UPDATE
 **************************************************/
 function update() {
-	localPlayer.update(keys);
+	if (localPlayer.update(keys)) {
+        socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY()});
+    };
 };
 
 
