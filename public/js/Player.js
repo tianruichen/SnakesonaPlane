@@ -22,7 +22,7 @@ Player.prototype.length = function () {
 };
 
 Player.prototype.grow = function (length) {
-	// TODO: grow
+	this.toGrow += length || 1;
 };
 
 Player.prototype.update = function (players) {
@@ -43,8 +43,9 @@ Player.prototype.update = function (players) {
 		});
 	});
 
-	this.segments.pop();
 	this.segments.unshift(head);
+	if (!this.toGrow) this.segments.pop();
+	else this.toGrow--;
 
 	return true;
 };
