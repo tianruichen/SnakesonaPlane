@@ -78,8 +78,6 @@ function onKeydown(e) {
 // Keyboard key up
 function onKeyup(e) {
 	if (localPlayer) {
-        //socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY()});
-        //console.log("testing");
 		keys.onKeyUp(e);
 	};
 };
@@ -108,19 +106,6 @@ function onNewPlayer(data) {
     remotePlayers.push(newPlayer);
 };
 
-/*function onMovePlayer(data) {
-    console.log("testing part 2");
-    var movePlayer = remotePlayerById(data.id);
-
-    if (!movePlayer) {
-        console.log("Player not found: "+data.id);
-        return;
-    };
-
-    movePlayer.setX(data.x);
-    movePlayer.setY(data.y);
-};*/
-
 function onRemovePlayer(data) {
     console.log("New player disconnected: " + data.id);
     var removeRemotePlayer = remotePlayerById(data.id);
@@ -148,25 +133,12 @@ function remotePlayerById(id) {
 ** GAME ANIMATION LOOP
 **************************************************/
 function animate() {
-	//update();
-    //console.log("testing");
     socket.emit("update");
 	draw();
 
 	// Request a new animation frame using Paul Irish's shim
 	window.requestAnimFrame(animate);
 };
-
-
-/**************************************************
-** GAME UPDATE
-**************************************************/
-/*function update() {
-	if (localPlayer.update(keys)) {
-        socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY()});
-    };
-};*/
-
 
 /**************************************************
 ** GAME DRAW
@@ -177,6 +149,7 @@ function draw() {
 
 	// Draw all players
     players.forEach(function (p) { p.draw(ctx); });
+    food.forEach(function (f) { f.draw(ctx); });
 };
 
 function toPrototype(proto, data) {
@@ -187,5 +160,5 @@ function toPrototype(proto, data) {
 
 function getObjects(data) {
     players = data.players.map(function (p) { return toPrototype(Player.prototype, p); });
-    food = data.food.map(function (f) { return toPrototype(Player.prototype, f); });
+    food = data.food.map(function (f) { return toPrototype(Food.prototype, f); });
 }

@@ -1,11 +1,17 @@
-var Food = function (startX, startY) {
-	this.x = startX;
-	this.y = startY;
+var Food = function () {
+	this.pos = [getRandomInt(10, 80), getRandomInt(10, 80)];
 };
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
 Food.prototype.draw = function (ctx) {
 	ctx.beginPath();
-	ctx.arc(x * 10 + 5, y * 10 + 5, 5, 0, 2 * Math.PI, false);
+	ctx.arc(this.pos[0] * 10 + 5, this.pos[1] * 10 + 5, 5, 0, 2 * Math.PI, false);
 	ctx.fillStyle = 'green';
 	ctx.fill();
 };
+
+// export if node.js
+if (typeof module !== "undefined") module.exports = Food;

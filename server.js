@@ -3,9 +3,10 @@ var express = require('express'),
     server = require('http').createServer(app),
     io = require('socket.io')(server),
     Player = require("./public/js/Player"),
+    Food = require("./public/js/Food"),
     players = [],
     food = [],
-    fps = 2,
+    fps = 20,
     intervalId;
 
 function init() {
@@ -13,22 +14,18 @@ function init() {
     server.listen(8000); 
     setEventHandlers();
     intervalId = setInterval(update, 1000 / fps);
+    console.log('Magic on port 8000');
 };
 
 function setEventHandlers(){
     io.on('connection', function(client) {  
         console.log('Client connected...');
-
         client.on('join', function(data) {
             console.log(data);
-            //client.emit('messages', 'Hello from server');
         });
-        
         client.on("disconnect", onClientDisconnect);
         client.on("new player", onNewPlayer);
         client.on("change direction", changeDirection);
-        // client.on("update", getObjects);
-        // client.on("remove player", onRemovePlayer);
     });
 };
 
@@ -43,20 +40,12 @@ function onClientDisconnect() {
 
     players.splice(players.indexOf(removePlayer), 1);
     this.broadcast.emit("remove player", {id: this.id});
-    //this.emit("remove player", {id: this.id, x: this.getX(), y: this.getY()})
 };
 
 function onNewPlayer(data) {
     var newPlayer = new Player(data.x, data.y);
     newPlayer.id = this.id;
     players.push(newPlayer);
-    /*this.broadcast.emit("new player", {id: newPlayer.id, x: data.x, y: data.y});
-    var i, existingPlayer;
-    for (i = 0; i < players.length; i++) {
-        existingPlayer = players[i];
-        //this.emit("new player", {id: existingPlayer.id, x: existingPlayer.getX(), y: existingPlayer.getY()});
-    };
-    players.push(newPlayer);*/
 };
 
 function changeDirection(data) {
@@ -67,8 +56,6 @@ function changeDirection(data) {
         return;
     };
     movePlayer.direction = data.direction;
-
-    //this.broadcast.emit("move player", {id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY()});
 };
 
 
@@ -87,7 +74,19 @@ function update() {
         if (!p.update(players)) {
             // TODO: player lose
         }
+        for (i = 0; i < food.length; i++) {
+            if (p.segments[0][0] === food[i].pos[0]){
+                if (p.segments[0][1] === food[i].pos[1]){
+                    p.grow();
+                    food.splice(i, 1);
+                }
+            }
+        }
     });
+    
+    while (food.length < 4){
+        food.push(new Food());
+    }
     io.emit("get objects", {players: players, food: food});
 }
 
