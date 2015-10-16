@@ -16,7 +16,7 @@ function getRandomColor() {
     }
     return color;
 }
-    
+
 Player.prototype.length = function () {
 	return this.segments.length;
 };
@@ -27,8 +27,7 @@ Player.prototype.grow = function (length) {
 
 Player.prototype.update = function (players) {
 	var head = this.segments[0].slice(),
-		headStr = JSON.stringify(head),
-		i, j, playerSegments;
+		headStr, i, j;
 
 	switch (this.direction) {
 		case "u": head[1]--; break;
@@ -37,11 +36,15 @@ Player.prototype.update = function (players) {
 		case "r": head[0]++; break;
 	}
 
-	players.forEach(function (p) {
-		p.segments.forEach(function (s) {
-			if (JSON.stringify(s) == headStr) return false;
+	headStr = JSON.stringify(head)
+	collision = players.some(function (p) {
+		return p.segments.some(function (s) {
+			if (JSON.stringify(s) === headStr) {
+				return true;
+			}
 		});
 	});
+	if (collision) return false;
 
 	this.segments.unshift(head);
 	if (!this.toGrow) this.segments.pop();

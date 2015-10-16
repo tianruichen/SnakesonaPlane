@@ -11,14 +11,14 @@ var express = require('express'),
 
 function init() {
     app.use(express.static(__dirname + '/public'));
-    server.listen(8000); 
+    server.listen(8000);
     setEventHandlers();
     intervalId = setInterval(update, 1000 / fps);
     console.log('Magic on port 8000');
 };
 
 function setEventHandlers(){
-    io.on('connection', function(client) {  
+    io.on('connection', function(client) {
         console.log('Client connected...');
         client.on('join', function(data) {
             console.log(data);
@@ -75,15 +75,14 @@ function update() {
             // TODO: player lose
         }
         for (i = 0; i < food.length; i++) {
-            if (p.segments[0][0] === food[i].pos[0]){
-                if (p.segments[0][1] === food[i].pos[1]){
-                    p.grow();
-                    food.splice(i, 1);
-                }
+            foodStr = JSON.stringify(food[i].pos);
+            if (JSON.stringify(p.segments[0]) === foodStr) {
+                p.grow();
+                food.splice(i, 1);
             }
         }
     });
-    
+
     while (food.length < 4){
         food.push(new Food());
     }
