@@ -12,7 +12,7 @@ var express = require('express'),
 
 function init() {
     app.get("/js/game.js", function (req, res) {
-		res.set("Content-Type", "text/javascript");
+        res.set("Content-Type", "text/javascript");
         res.send(fs.readFileSync(__dirname + "/public" + req.path, {encoding: "utf8"})
             .replace(/{{\s*url\s*}}/, req.protocol + "://" +  req.get("host")));
     });
@@ -53,20 +53,26 @@ function onNewPlayer(data) {
 };
 
 function changeDirection(data) {
-    var movePlayer = playerById(this.id);
+    var player = playerById(this.id);
 
-    if (!movePlayer) {
+    if (!player) {
         console.log("Player not found: "+this.id);
         return;
-    };
-    movePlayer.direction = data.direction;
+    }
+    switch (data.direction) {
+        case "u": if (player.direction === "d") return; break;
+        case "d": if (player.direction === "u") return; break;
+        case "l": if (player.direction === "r") return; break;
+        case "r": if (player.direction === "l") return; break;
+    }
+    player.direction = data.direction;
 };
 
 
 function playerById(id) {
     var i;
     for (i = 0; i < players.length; i++) {
-        if (players[i].id == id)
+        if (players[i].id === id)
             return players[i];
     };
 
