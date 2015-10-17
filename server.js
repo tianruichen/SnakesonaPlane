@@ -2,6 +2,7 @@ var express = require('express'),
     app = express(),
     server = require('http').createServer(app),
     io = require('socket.io')(server),
+    fs = require("fs"),
     Player = require("./public/js/Player"),
     Food = require("./public/js/Food"),
     players = [],
@@ -10,6 +11,11 @@ var express = require('express'),
     intervalId;
 
 function init() {
+    app.get("/js/game.js", function (req, res) {
+		res.set("Content-Type", "text/javascript");
+        res.send(fs.readFileSync(__dirname + "/public" + req.path, {encoding: "utf8"})
+            .replace(/{{\s*url\s*}}/, req.protocol + "://" +  req.get("host")));
+    });
     app.use(express.static(__dirname + '/public'));
     server.listen(8000);
     setEventHandlers();
