@@ -8,7 +8,8 @@ var canvas,			// Canvas DOM element
 	localPlayer,	// Local player
     players = [],
     food = [],
-    socket;
+    socket,
+    gameOver = false;
 
 
 /**************************************************
@@ -64,15 +65,17 @@ var setEventHandlers = function() {
 
 // Keyboard key down
 function onKeydown(e) {
-	var d = false;
-    switch (e.keyCode) {
-		case 37: d = "l"; break;
-		case 38: d = "u"; break;
-		case 39: d = "r"; break;
-		case 40: d = "d"; break;
-	}
+    if (!gameOver){
+        var d = false;
+        switch (e.keyCode) {
+            case 37: d = "l"; break;
+            case 38: d = "u"; break;
+            case 39: d = "r"; break;
+            case 40: d = "d"; break;
+        }
 
-	if (d) socket.emit("change direction", {id: localPlayer.id, direction: d});
+        if (d) socket.emit("change direction", {id: localPlayer.id, direction: d});
+    }
 };
 
 // Keyboard key up
@@ -107,17 +110,20 @@ function onNewPlayer(data) {
 };
 
 function onRemovePlayer(data) {
-    console.log("New player disconnected: " + data.id);
+    /*console.log("New player disconnected: " + data.id);
     var removeRemotePlayer = remotePlayerById(data.id);
 
     if (!removeRemotePlayer) {
         console.log("Player not found: "+data.id);
         return;
-    };
-
-    remotePlayers.splice(remotePlayers.indexOf(removeRemotePlayer), 1);
-
-    this.broadcast.emit("remove player", {id: this.id});
+    };*/
+    console.log("testing");
+    if (data.id === this.id){
+        console.log("dead");
+        gameOver = true;
+    }
+    //remotePlayers.splice(remotePlayers.indexOf(removeRemotePlayer), 1);
+    //this.broadcast.emit("remove player", {id: this.id});
 };
 
 function remotePlayerById(id) {
@@ -133,8 +139,7 @@ function remotePlayerById(id) {
 ** GAME ANIMATION LOOP
 **************************************************/
 function animate() {
-    socket.emit("update");
-	draw();
+    draw();
 
 	// Request a new animation frame using Paul Irish's shim
 	window.requestAnimFrame(animate);
@@ -150,6 +155,12 @@ function draw() {
 	// Draw all players
     players.forEach(function (p) { p.draw(ctx); });
     food.forEach(function (f) { f.draw(ctx); });
+    if (gameOver){
+        ctx.font="30px Comic Sans";
+        ctx.fillStyle = "black";
+        ctx.fillText("Game Over",canvas.width/2,canvas.height/2);
+        ctx.fillText("Refresh to restart",canvas.width/2,canvas.height/2 + 35);
+    }
 };
 
 function toPrototype(proto, data) {

@@ -37,9 +37,7 @@ function onClientDisconnect() {
         console.log("Player not found: "+this.id);
         return;
     };
-
     players.splice(players.indexOf(removePlayer), 1);
-    this.broadcast.emit("remove player", {id: this.id});
 };
 
 function onNewPlayer(data) {
@@ -72,7 +70,9 @@ function playerById(id) {
 function update() {
     players.forEach(function(p) {
         if (!p.update(players)) {
-            // TODO: player lose
+            console.log("Yolo");
+            io.emit("remove player", {id: p.id});
+            players.splice(players.indexOf(p), 1);
         }
         for (i = 0; i < food.length; i++) {
             foodStr = JSON.stringify(food[i].pos);
