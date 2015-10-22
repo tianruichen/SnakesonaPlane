@@ -17,7 +17,6 @@ function getRandomInt(min, max) {
 }
 
 Food.prototype.draw = function (ctx) {
-    
 	ctx.beginPath();
 	ctx.arc(this.pos[0] * 10 + 5, this.pos[1] * 10 + 5, 5, 0, 2 * Math.PI, false);
 	ctx.fillStyle = this.color;
