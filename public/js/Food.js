@@ -1,5 +1,5 @@
 var Food = function () {
-	this.pos = [getRandomInt(20, 130), getRandomInt(20, 100)];
+	this.pos = [getRandomInt(0, 135), getRandomInt(0, 85)];
     this.color = getRandomColor();
 };
 
