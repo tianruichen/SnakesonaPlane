@@ -95,7 +95,7 @@ function update() {
         }
     });
 
-    while (food.length < 4){
+    while (food.length < 50){
         food.push(new Food());
     }
     io.emit("get objects", {players: players, food: food});
