@@ -83,7 +83,7 @@ function update() {
     players.forEach(function(p) {
         if (!p.update(players)) {
             console.log("Yolo");
-            io.emit("remove player", {id: p.id});
+            io.emit("remove player", {id: p.id, length: p.segments.length});
             players.splice(players.indexOf(p), 1);
         }
         for (i = 0; i < food.length; i++) {

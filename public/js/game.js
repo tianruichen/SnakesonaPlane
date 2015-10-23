@@ -18,6 +18,8 @@ var canvas,			// Canvas DOM element
 function init() {
 	// Declare the canvas and rendering context
 	canvas = document.getElementById("gameCanvas");
+    canvas.style.display = "inline";
+    gameOver = false;
 	ctx = canvas.getContext("2d");
 
 	// Maximise the canvas
@@ -30,8 +32,8 @@ function init() {
 	// Calculate a random start position for the local player
 	// The minus 5 (half a player size) stops the player being
 	// placed right on the egde of the screen
-	var startX = Math.round(Math.random()*(canvas.width-5)),
-		startY = Math.round(Math.random()*(canvas.height-5));
+	var startX = Math.floor(Math.random() * 49),
+		startY = Math.floor(Math.random() * 49);
 
 	// Initialise the local player
 	localPlayer = new Player(startX, startY);
@@ -41,7 +43,7 @@ function init() {
 
 	// Start listening for events
 	setEventHandlers();
-
+    socket.emit("new player", {x:startX, y:startY});
 };
 
 
@@ -94,7 +96,7 @@ function onResize(e) {
 
 function onSocketConnected() {
     console.log("Connected to socket server");
-    socket.emit("new player", {x: Math.floor(Math.random() * 49), y: Math.floor(Math.random() * 49)});
+    
 };
 
 function onSocketDisconnect() {
@@ -119,12 +121,18 @@ function onRemovePlayer(data) {
     };*/
     console.log("testing");
     if (data.id === this.id){
+        var length = data.length;
         console.log("dead");
         gameOver = true;
+        canvas.style.display = "none";
+        text = document.getElementById("centerText");
+        text.innerHTML = "Length at death: " + length * 5 + " px"
+        document.getElementById("screen2").style.display = "inline";
     }
     //remotePlayers.splice(remotePlayers.indexOf(removeRemotePlayer), 1);
     //this.broadcast.emit("remove player", {id: this.id});
 };
+
 
 function remotePlayerById(id) {
     var i;
@@ -142,7 +150,9 @@ function animate() {
     draw();
 
 	// Request a new animation frame using Paul Irish's shim
-	window.requestAnimFrame(animate);
+	if (!gameOver){
+        window.requestAnimFrame(animate);
+    }
 };
 
 /**************************************************
@@ -155,12 +165,6 @@ function draw() {
 	// Draw all players
     players.forEach(function (p) { p.draw(ctx); });
     food.forEach(function (f) { f.draw(ctx); });
-    if (gameOver){
-        ctx.font="30px Comic Sans";
-        ctx.fillStyle = "black";
-        ctx.fillText("Game Over",canvas.width/2,canvas.height/2);
-        ctx.fillText("Refresh to restart",canvas.width/2,canvas.height/2 + 35);
-    }
 };
 
 function toPrototype(proto, data) {
