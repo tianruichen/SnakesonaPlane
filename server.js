@@ -81,8 +81,10 @@ function playerById(id) {
 
 function update() {
     players.forEach(function(p) {
-        if (!p.update(players)) {
+        var collidedWith = p.update(players);
+        if (collidedWith) {
             console.log("Yolo");
+            collidedWith.grow(p.segments.length);
             io.emit("remove player", {id: p.id, length: p.segments.length});
             players.splice(players.indexOf(p), 1);
         }
