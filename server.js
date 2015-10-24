@@ -54,18 +54,11 @@ function onNewPlayer(data) {
 
 function changeDirection(data) {
     var player = playerById(this.id);
-
     if (!player) {
         console.log("Player not found: "+this.id);
         return;
     }
-    switch (data.direction) {
-        case "u": if (player.direction === "d") return; break;
-        case "d": if (player.direction === "u") return; break;
-        case "l": if (player.direction === "r") return; break;
-        case "r": if (player.direction === "l") return; break;
-    }
-    player.direction = data.direction;
+    player.input = data.direction;
 };
 
 
@@ -81,6 +74,14 @@ function playerById(id) {
 
 function update() {
     players.forEach(function(p) {
+        switch (p.input) {
+            case "u": if (p.direction !== "d") p.direction = p.input; break;
+            case "d": if (p.direction !== "u") p.direction = p.input; break;
+            case "l": if (p.direction !== "r") p.direction = p.input; break;
+            case "r": if (p.direction !== "l") p.direction = p.input; break;
+        }
+        delete p.input;
+
         var collidedWith = p.update(players);
         if (collidedWith) {
             console.log("Yolo");
