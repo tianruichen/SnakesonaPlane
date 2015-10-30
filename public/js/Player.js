@@ -50,20 +50,16 @@ Player.prototype.update = function (players) {
     }
 
 	headStr = JSON.stringify(head)
-	collision = players.some(function (p) {
+	collision = players.filter(function (p) {
 		return p.segments.some(function (s) {
-			if (JSON.stringify(s) === headStr) {
-				return true;
-			}
+			return JSON.stringify(s) === headStr;
 		});
 	});
-	if (collision) return false;
+	if (collision.length) return collision[0];
 
 	this.segments.unshift(head);
 	if (!this.toGrow) this.segments.pop();
 	else this.toGrow--;
-
-	return true;
 };
 
 Player.prototype.draw = function (ctx) {
