@@ -5,66 +5,66 @@
 	<head>
 		<title>Multiplayer Snake</title>
 		<meta charset="utf-8">
-		
+
 		<link rel="stylesheet" href="style/reset.css">
 		<link rel="stylesheet" href="style/game.css">
-        <link rel="stylesheet" href="style/screen.css">
+		<link rel="stylesheet" href="style/screen.css">
 	</head>
-	
+
 	<body>
 		<canvas id="gameCanvas" style="display: none"></canvas>
-        <script src="/socket.io/socket.io.js"></script> 
-        
+		<script src="/socket.io/socket.io.js"></script>
+
 		<script src="js/requestAnimationFrame.js"></script>
 		<script src="js/Keys.js"></script>
 		<script src="js/Player.js"></script>
-        <script src="js/Food.js"></script>
+		<script src="js/Food.js"></script>
 		<script src="js/game.js"></script>
 		<script>
-			function startGame(){
-                document.getElementById("screen").style.display = "none";
-                init();
-                animate();
-            }
-            
-            function restartGame(){
-                document.getElementById("screen2").style.display = "none";
-                document.getElementById("screen").style.display = "inline";
-            }
+			function startGame() {
+				document.getElementById("screen").style.display = "none";
+				init();
+				animate();
+			}
+
+			function restartGame() {
+				document.getElementById("screen2").style.display = "none";
+				document.getElementById("screen").style.display = "inline";
+			}
 		</script>
-        <div id="screen">
-            <div class="start">
-                <div class="header">
-                    Multiplayer Snake
-                </div>
-                <div class="center">
-                    
-                </div>
-                <button class="myButton" onclick="startGame()">
-                        Start
-                    </button>
-                <div class="footer">
-                    Created by Tianrui Chen and Simon Deng
-                </div>    
-            </div>
-        </div>
-        <div id="screen2" style="display: none">
-            <div class="start">
-                <div class="header">
-                    Game Over!
-                </div>
-                <div class="center">
-                    <div id="centerText">
-                        
-                    </div>
-                </div>
-                <button class="myButton" onclick="restartGame()">
-                        Restart
-                    </button>
-                <div class="footer">
-                    Created by Tianrui Chen and Simon Deng
-                </div>    
-            </div>
-        </div>
+		<div id="screen">
+			<div class="start">
+				<div class="header">
+					Multiplayer Snake
+				</div>
+				<div class="center">
+
+				</div>
+				<button class="myButton" onclick="startGame()">
+						Start
+					</button>
+				<div class="footer">
+					Created by Tianrui Chen and Simon Deng
+				</div>
+			</div>
+		</div>
+		<div id="screen2" style="display: none">
+			<div class="start">
+				<div class="header">
+					Game Over!
+				</div>
+				<div class="center">
+					<div id="centerText">
+
+					</div>
+				</div>
+				<button class="myButton" onclick="restartGame()">
+						Restart
+					</button>
+				<div class="footer">
+					Created by Tianrui Chen and Simon Deng
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

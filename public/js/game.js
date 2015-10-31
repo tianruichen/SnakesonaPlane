@@ -4,12 +4,12 @@
 var canvas,			// Canvas DOM element
 	ctx,			// Canvas rendering context
 	keys,			// Keyboard input
-    remotePlayers,  // Remote player
+	remotePlayers,  // Remote player
 	localPlayer,	// Local player
-    players = [],
-    food = [],
-    socket,
-    gameOver = false;
+	players = [],
+	food = [],
+	socket,
+	gameOver = false;
 
 
 /**************************************************
@@ -18,8 +18,8 @@ var canvas,			// Canvas DOM element
 function init() {
 	// Declare the canvas and rendering context
 	canvas = document.getElementById("gameCanvas");
-    canvas.style.display = "inline";
-    gameOver = false;
+	canvas.style.display = "inline";
+	gameOver = false;
 	ctx = canvas.getContext("2d");
 
 	// Maximise the canvas
@@ -38,12 +38,12 @@ function init() {
 	// Initialise the local player
 	localPlayer = new Player(startX, startY);
 
-    socket = io.connect('{{url}}');
-    remotePlayers = [];
+	socket = io.connect('{{url}}');
+	remotePlayers = [];
 
 	// Start listening for events
 	setEventHandlers();
-    socket.emit("new player", {x:startX, y:startY});
+	socket.emit("new player", {x:startX, y:startY});
 };
 
 
@@ -57,27 +57,27 @@ var setEventHandlers = function() {
 
 	// Window resize
 	window.addEventListener("resize", onResize, false);
-    socket.on("connect", onSocketConnected);
-    socket.on("disconnect", onSocketDisconnect);
-    socket.on("new player", onNewPlayer);
-    //socket.on("move player", changeDirection);
-    socket.on("remove player", onRemovePlayer);
-    socket.on("get objects", getObjects);
+	socket.on("connect", onSocketConnected);
+	socket.on("disconnect", onSocketDisconnect);
+	socket.on("new player", onNewPlayer);
+	//socket.on("move player", changeDirection);
+	socket.on("remove player", onRemovePlayer);
+	socket.on("get objects", getObjects);
 };
 
 // Keyboard key down
 function onKeydown(e) {
-    if (!gameOver){
-        var d = false;
-        switch (e.keyCode) {
-            case 37: d = "l"; break;
-            case 38: d = "u"; break;
-            case 39: d = "r"; break;
-            case 40: d = "d"; break;
-        }
+	if (!gameOver) {
+		var d = false;
+		switch (e.keyCode) {
+			case 37: d = "l"; break;
+			case 38: d = "u"; break;
+			case 39: d = "r"; break;
+			case 40: d = "d"; break;
+		}
 
-        if (d) socket.emit("change direction", {id: localPlayer.id, direction: d});
-    }
+		if (d) socket.emit("change direction", {id: localPlayer.id, direction: d});
+	}
 };
 
 // Keyboard key up
@@ -95,64 +95,64 @@ function onResize(e) {
 };
 
 function onSocketConnected() {
-    console.log("Connected to socket server");
-    
+	console.log("Connected to socket server");
+
 };
 
 function onSocketDisconnect() {
-    console.log("Disconnected from socket server");
-    //socket.emit("remove player", {x: localPlayer.getX(), y: localPlayer.getY()});
+	console.log("Disconnected from socket server");
+	//socket.emit("remove player", {x: localPlayer.getX(), y: localPlayer.getY()});
 };
 
 function onNewPlayer(data) {
-    console.log("New player connected: "+data.id);
-    var newPlayer = new Player(data.x, data.y);
-    newPlayer.id = data.id;
-    remotePlayers.push(newPlayer);
+	console.log("New player connected: " + data.id);
+	var newPlayer = new Player(data.x, data.y);
+	newPlayer.id = data.id;
+	remotePlayers.push(newPlayer);
 };
 
 function onRemovePlayer(data) {
-    /*console.log("New player disconnected: " + data.id);
-    var removeRemotePlayer = remotePlayerById(data.id);
+	/*console.log("New player disconnected: " + data.id);
+	var removeRemotePlayer = remotePlayerById(data.id);
 
-    if (!removeRemotePlayer) {
-        console.log("Player not found: "+data.id);
-        return;
-    };*/
-    console.log("testing");
-    if (data.id === this.id){
-        var length = data.length;
-        console.log("dead");
-        gameOver = true;
-        canvas.style.display = "none";
-        text = document.getElementById("centerText");
-        text.innerHTML = "Length at death: " + length * 5 + " px"
-        document.getElementById("screen2").style.display = "inline";
-    }
-    //remotePlayers.splice(remotePlayers.indexOf(removeRemotePlayer), 1);
-    //this.broadcast.emit("remove player", {id: this.id});
+	if (!removeRemotePlayer) {
+		console.log("Player not found: " + data.id);
+		return;
+	};*/
+	console.log("testing");
+	if (data.id === this.id) {
+		var length = data.length;
+		console.log("dead");
+		gameOver = true;
+		canvas.style.display = "none";
+		text = document.getElementById("centerText");
+		text.innerHTML = "Length at death: " + length * 5 + " px"
+		document.getElementById("screen2").style.display = "inline";
+	}
+	//remotePlayers.splice(remotePlayers.indexOf(removeRemotePlayer), 1);
+	//this.broadcast.emit("remove player", {id: this.id});
 };
 
 
 function remotePlayerById(id) {
-    var i;
-    for (i = 0; i < remotePlayers.length; i++) {
-        if (remotePlayers[i].id == id)
-            return remotePlayers[i];
-    };
+	var i;
+	for (i = 0; i < remotePlayers.length; i++) {
+		if (remotePlayers[i].id == id)
+			return remotePlayers[i];
+	};
 
-    return false;
+	return false;
 };
 /**************************************************
 ** GAME ANIMATION LOOP
 **************************************************/
 function animate() {
-    draw();
+	draw();
 
 	// Request a new animation frame using Paul Irish's shim
-	if (!gameOver){
-        window.requestAnimFrame(animate);
-    }
+	if (!gameOver) {
+		window.requestAnimFrame(animate);
+	}
 };
 
 /**************************************************
@@ -163,8 +163,8 @@ function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	// Draw all players
-    players.forEach(function (p) { p.draw(ctx); });
-    food.forEach(function (f) { f.draw(ctx); });
+	players.forEach(function (p) { p.draw(ctx); });
+	food.forEach(function (f) { f.draw(ctx); });
 };
 
 function toPrototype(proto, data) {
@@ -174,6 +174,6 @@ function toPrototype(proto, data) {
 }
 
 function getObjects(data) {
-    players = data.players.map(function (p) { return toPrototype(Player.prototype, p); });
-    food = data.food.map(function (f) { return toPrototype(Food.prototype, f); });
+	players = data.players.map(function (p) { return toPrototype(Player.prototype, p); });
+	food = data.food.map(function (f) { return toPrototype(Food.prototype, f); });
 }
