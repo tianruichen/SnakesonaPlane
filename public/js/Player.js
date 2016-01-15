@@ -36,17 +36,17 @@ Player.prototype.update = function (players) {
 		case "r": head[0]++; break;
 	}
 
-	if (head[0] > 148) {
+	if (head[0] > 140) {
 		head[0] = 0;
 	}
 	if (head[0] < 0) {
-		head[0] = 148;
+		head[0] = 140;
 	}
-	if (head[1] > 90) {
+	if (head[1] > 80) {
 		head[1] = 0;
 	}
 	if (head[1] < 0) {
-		head[1] = 90;
+		head[1] = 80;
 	}
 
 	headStr = JSON.stringify(head)

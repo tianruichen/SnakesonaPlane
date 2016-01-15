@@ -9,7 +9,13 @@ var canvas,			// Canvas DOM element
 	players = [],
 	food = [],
 	socket,
-	gameOver = false;
+	gameOver = false,
+    width = 1410.0,
+    height = 810.0,
+    scaleFactorW,
+    scaleFactorH,
+    invW,
+    invH;
 
 
 /**************************************************
@@ -25,6 +31,10 @@ function init() {
 	// Maximise the canvas
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
+    scaleFactorW = window.innerWidth/width;
+    scaleFactorH = window.innerHeight/height;
+    invW = 1/scaleFactorW;
+    invH = 1/scaleFactorH;
 
 	// Initialise keyboard controls
 	keys = new Keys();
@@ -148,7 +158,6 @@ function remotePlayerById(id) {
 **************************************************/
 function animate() {
 	draw();
-
 	// Request a new animation frame using Paul Irish's shim
 	if (!gameOver) {
 		window.requestAnimFrame(animate);
@@ -160,11 +169,14 @@ function animate() {
 **************************************************/
 function draw() {
 	// Wipe the canvas clean
+    
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    ctx.scale(scaleFactorW, scaleFactorH);
+    console.log(scaleFactorW + ", " + scaleFactorH);
 	// Draw all players
 	players.forEach(function (p) { p.draw(ctx); });
 	food.forEach(function (f) { f.draw(ctx); });
+    ctx.scale(invW, invH);
 };
 
 function toPrototype(proto, data) {
